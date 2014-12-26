@@ -1,22 +1,23 @@
 package com.sysgears.example.service
 
-import akka.actor.{ActorLogging, Actor}
-import com.sysgears.example.config.ExampleConfiguration
 import java.util.Date
+
+import akka.actor.{Actor, ActorLogging}
+import com.sysgears.example.config.ZooKeeperConfiguration
+import org.apache.curator.framework.CuratorFramework
 import spray.can.Http
 import spray.http._
 
 /**
  * HTTP Service actor.
  */
-class ExampleService extends Actor with ActorLogging with ExampleConfiguration {
+class ExampleService(implicit val zkClient: CuratorFramework) extends Actor with ActorLogging with ZooKeeperConfiguration {
 
   override def preStart() {
     log.info("Example service is running in %s environment.".format(Environment))
   }
 
   override def postStop() {
-    zkClient.close()
     log.info("Example service has been terminated.")
   }
 

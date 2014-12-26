@@ -13,6 +13,11 @@ trait BaseConfiguration {
   val config = ConfigFactory.load()
 
   /**
+   * Service name.
+   */
+  val Service: String = "example"
+
+  /**
    * Environment to use configuration settings for.
    */
   val Environment = config.getString("environment")
