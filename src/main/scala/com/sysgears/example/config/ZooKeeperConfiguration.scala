@@ -1,13 +1,15 @@
 package com.sysgears.example.config
 
-import com.google.common.base.Charsets
 import java.nio.charset.Charset
 import java.util.MissingResourceException
 import java.util.concurrent.TimeUnit
+
+import com.google.common.base.Charsets
 import org.apache.curator.framework.{CuratorFramework, CuratorFrameworkFactory}
 import org.apache.curator.retry.ExponentialBackoffRetry
-import org.apache.curator.{retry, RetryPolicy}
+import org.apache.curator.{RetryPolicy, retry}
 import org.apache.zookeeper.KeeperException
+
 import scala.util.Try
 
 /**
@@ -115,7 +117,7 @@ trait ZooKeeperConfiguration extends BaseConfiguration {
    * @return configuration setting value
    */
   def getSetting(path: String)(implicit client: CuratorFramework): Array[Byte] = {
-    client.getData.forPath("%s".format(path.trim.replaceAll("\\.", "/")))
+    client.getData.forPath("/%s".format(path.trim.replaceAll("\\.", "/")))
   }
 
   /**
