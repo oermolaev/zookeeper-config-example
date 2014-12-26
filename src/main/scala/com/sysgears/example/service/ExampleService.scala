@@ -35,12 +35,12 @@ class ExampleService(implicit val zkClient: CuratorFramework) extends Actor with
 
     case HttpRequest(HttpMethods.GET, Uri.Path("/example"), _, _, _) => {
       sender() ! HttpResponse(status = StatusCodes.OK,
-        entity = HttpEntity(MediaTypes.`text/html`, index))
+        entity = HttpEntity(MediaTypes.`text/html`, getIndex))
     }
 
     case HttpRequest(HttpMethods.GET, Uri.Path("/ping"), _, _, _) => {
       sender() ! HttpResponse(status = StatusCodes.OK,
-        entity = HttpEntity(MediaTypes.`text/html`, "<h2>Pong!</h2>"))
+        entity = HttpEntity(MediaTypes.`text/html`, "<h2>pong!</h2>"))
     }
 
     case _: HttpRequest => {
@@ -54,14 +54,14 @@ class ExampleService(implicit val zkClient: CuratorFramework) extends Actor with
     }
   }
 
-  private lazy val index: String =
+  private def getIndex: String =
     """
       |<html>
       | <head>
       |   <title>Index</title>
       | </head>
       | <body>
-      |   <h1>Welcome to <i>%s service</i></h1>
+      |   <h1>Welcome to the <i>%s service</i></h1>
       |   <h3>Resources:</h3>
       |   <ul>
       |     <li><a href="/ping">/ping</a></li>
@@ -90,8 +90,8 @@ class ExampleService(implicit val zkClient: CuratorFramework) extends Actor with
       | </body>
       |</html>
     """.stripMargin.format(Service, Environment, new Date(context.system.startTime),
-      getSetting("%s.host".format(Service)).asString, getSetting("%s.port".format(Service)).asInt,
-      getSetting("db.host").asString + getSetting("%s.db.name".format(Service)).asString + "?user=" +
-        getSetting("%s.db.user".format(Service)).asString + "&password=" + getSetting("%s.db.password".format(Service)).asString,
-      getSetting("db.maxConnections").asInt)
+        getSetting("%s.host".format(Service)).asString, getSetting("%s.port".format(Service)).asInt,
+        getSetting("db.host").asString + getSetting("%s.db.name".format(Service)).asString + "?user=" +
+          getSetting("%s.db.user".format(Service)).asString + "&password=" + getSetting("%s.db.password".format(Service)).asString,
+        getSetting("db.maxConnections").asInt)
 }
