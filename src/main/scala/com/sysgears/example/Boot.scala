@@ -8,6 +8,7 @@ import akka.io.IO
 import akka.pattern.ask
 import akka.util.Timeout
 import com.sysgears.example.config.ZooKeeperConfiguration
+import com.sysgears.example.model.BindParameters
 import com.sysgears.example.service.ExampleService
 import org.apache.curator.framework.CuratorFramework
 import spray.can.Http
@@ -40,10 +41,9 @@ object Boot extends App with ZooKeeperConfiguration {
   // Obtains HTTP bind parameters
   val f = exampleService ? "bind-parameters"
   f.onSuccess {
-    case bindParams: (String, Int) => {
-      log.info("Binding Example HTTP Service to {}:{}...", bindParams._1, bindParams._2)
-      IO(Http) ! Http.Bind(exampleService, interface = bindParams._1, port = bindParams._2)
-    }
+    case BindParameters(serviceHost, servicePort) =>
+      log.info("Binding Example HTTP Service to {}:{}...", serviceHost, servicePort)
+      IO(Http) ! Http.Bind(exampleService, interface = serviceHost, port = servicePort)
     case any: Any => log.error("Failed to execute bind command. Illegal bind parameters received: {}", any)
   }
   f.onFailure {

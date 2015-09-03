@@ -80,13 +80,13 @@ trait ZooKeeperConfiguration extends BaseConfiguration {
       .connectString(connectionString)
       .retryPolicy(new retry.RetryOneTime(RetryInterval))
       .buildTemp(LookupClientTimeout, TimeUnit.MILLISECONDS)
-    val serviceConfigPath = "/system/%s/%s".format(environment, service)
+    val serviceConfigPath = s"/system/$environment/$service"
     try {
       lookupClient.inTransaction().check().forPath(serviceConfigPath).and().commit()
     } catch {
       case ke: KeeperException => {
-        throw new MissingResourceException("Remote configuration for %s service in %s environment is unavailable: %s - %s."
-          .format(service, environment, ke.code(), ke.getMessage), "ZNode", serviceConfigPath)
+        throw new MissingResourceException(s"Remote configuration for $service service in $environment environment " +
+          s"is unavailable: ${ke.code()} - ${ke.getMessage}.", "ZNode", serviceConfigPath)
       }
     }
 
@@ -95,8 +95,7 @@ trait ZooKeeperConfiguration extends BaseConfiguration {
       .connectionTimeoutMs(connectionTimeout)
       .sessionTimeoutMs(sessionTimeout)
       .retryPolicy(retryPolicy)
-      .authorization(authScheme, authData)
-      .namespace("system/" + environment)
+      .namespace(s"system/$environment")
       .build()
 
     try {
@@ -104,8 +103,7 @@ trait ZooKeeperConfiguration extends BaseConfiguration {
       client
     } catch {
       case t: Throwable =>
-        throw new RuntimeException("Unable to start ZooKeeper remote configuration client: %s".
-          format(t.getLocalizedMessage), t)
+        throw new RuntimeException(s"Unable to start ZooKeeper remote configuration client: ${t.getMessage}", t)
     }
   }
 
@@ -117,7 +115,7 @@ trait ZooKeeperConfiguration extends BaseConfiguration {
    * @return configuration setting value
    */
   def getSetting(path: String)(implicit client: CuratorFramework): Array[Byte] = {
-    client.getData.forPath("/%s".format(path.trim.replaceAll("\\.", "/")))
+    client.getData.forPath(s"/${path.trim.replaceAll("\\.", "/")}")
   }
 
   /**
