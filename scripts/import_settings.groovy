@@ -10,8 +10,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Grapes([
-        @Grab(group = 'org.slf4j', module = 'slf4j-simple', version = '1.7.12'),
-        @Grab('org.apache.curator:curator-framework:2.8.0'),
+        @Grab(group = 'org.slf4j', module = 'slf4j-simple', version = '1.7.13'),
+        @Grab('org.apache.curator:curator-framework:2.9.1'),
         @Grab('com.typesafe:config:1.3.0'),
         @Grab('commons-cli:commons-cli:1.3.1')
 ])
